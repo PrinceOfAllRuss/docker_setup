@@ -1,0 +1,58 @@
+networks:
+    iternal:
+        name: iternal
+    exposed:
+        name: exposed
+services:
+    jvm:
+        build: ./jvm
+        volumes:
+            - ./jvm/dist:/opt/application
+            - ./jvm/home:/home
+        networks:
+            - iternal
+            - exposed
+        depends_on:
+            - postgres
+        deploy:
+            resources:
+                limits:
+                    cpus: '1'
+                    memory: 4096M #4GB
+        restart: always
+        entrypoint: /bin/bash /home/startup.sh
+    nginx:
+        image: nginx:latest
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./nginx/conf.d:/etc/nginx/conf.d
+            - ./nginx/home:/home
+        networks:
+            - exposed
+        depends_on:
+            - jvm
+        entrypoint: /bin/bash /home/startup.sh
+    postgres:
+        image: postgres:18
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: 8574
+        volumes:
+            - ./postgres/home:/home
+            - ./postgres/root:/root
+            - ./postgres/init.d:/docker-entrypoint-initdb.d
+        networks:
+            - iternal
+        ports:
+            - "5432:5432"
+        deploy:
+            resources:
+                limits:
+                    cpus: '1'
+                    memory: 1024M #2GB
+    redis:
+        image: redis:7-alpine
+        ports:
+            - "6379:6379"
