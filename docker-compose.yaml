@@ -17,15 +17,14 @@ services:
         deploy:
             resources:
                 limits:
-                    cpus: '1'
+                    cpus: '3'
                     memory: 4096M #4GB
         restart: always
         entrypoint: /bin/bash /home/startup.sh
     nginx:
         image: nginx:latest
         ports:
-            - "80:80"
-            - "443:443"
+            - "5267:80"
         volumes:
             - ./nginx/conf.d:/etc/nginx/conf.d
             - ./nginx/home:/home
@@ -46,7 +45,7 @@ services:
         networks:
             - iternal
         ports:
-            - "5432:5432"
+            - "6752:5432"
         deploy:
             resources:
                 limits:
@@ -55,4 +54,4 @@ services:
     redis:
         image: redis:7-alpine
         ports:
-            - "6379:6379"
+            - "6753:6379"
