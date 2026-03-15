@@ -55,3 +55,5 @@ services:
         image: redis:7-alpine
         ports:
             - "6753:6379"
+        networks:
+            - iternal
