@@ -50,7 +50,7 @@ services:
             resources:
                 limits:
                     cpus: '1'
-                    memory: 1024M #2GB
+                    memory: 2048M #2GB
     redis:
         image: redis:7-alpine
         ports:
